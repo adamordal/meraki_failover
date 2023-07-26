@@ -28,6 +28,7 @@ def lambda_handler(event, context):
                 DestinationCidrBlock='10.0.0.0/8',
                 RouteTableId='rtb-06153e46a122c1bf5'
             )
+            return(response)
         
         except botocore.exceptions.ClientError as error:
             print(error)
@@ -38,6 +39,7 @@ def lambda_handler(event, context):
                 InstanceId=instance
             )
             print(f"Updated route to use {instance}")
+            return(route)
         except botocore.exceptions.ClientError as error:
             print(error)
         
@@ -53,20 +55,23 @@ def lambda_handler(event, context):
                 instance = vmx2
         except:
             instance = vmx2
-
+        #Remove Old Route
         try:
             response = client.delete_route(
                 DestinationCidrBlock='10.0.0.0/8',
                 RouteTableId='rtb-06153e46a122c1bf5'
             )
+            return(response)
         except botocore.exceptions.ClientError as error:
             print(error)
-    
+
+        #Add new route
         try:
             route = route_table.create_route(
                 DestinationCidrBlock='10.0.0.0/8',
                 InstanceId=instance
             )
             print(f"Updated route to use {instance}")
+            return(route)
         except botocore.exceptions.ClientError as error:
             print(error)
