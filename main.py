@@ -10,7 +10,7 @@ def lambda_handler(event, context):
     route_table = ec2.RouteTable('rtb-06153e46a122c1bf5')
     
     if event["detail"]["configuration"]["metrics"][0]["metricStat"]["metric"]["dimensions"]["InstanceId"] == vmx1:
-        #Check status of vmx2 to ensure its ok to use if not set to self (used in case only 1 instance is online and this is the instance being brought up)
+        #Check status of vmx2 to ensure its ok to use if not set to self (used in case both instances are offline and this is the one being brought online)
         try:
             response = client.describe_instance_status(InstanceIds=[vmx2])
             vmx_instance = response['InstanceStatuses'][0]['InstanceStatus']['Details'][0]['Status']
@@ -42,7 +42,7 @@ def lambda_handler(event, context):
             print(error)
         
     elif event["detail"]["configuration"]["metrics"][0]["metricStat"]["metric"]["dimensions"]["InstanceId"] == vmx2:
-        #Check status of vmx2 to ensure its ok to use if not set to self (used in case only 1 instance is online and this is the instance being brought up)
+        #Check status of vmx2 to ensure its ok to use if not set to self (used in case both instances are offline and this is the one being brought online)
         try:
             response = client.describe_instance_status(InstanceIds=[vmx1])
             vmx_instance = response['InstanceStatuses'][0]['InstanceStatus']['Details'][0]['Status']
