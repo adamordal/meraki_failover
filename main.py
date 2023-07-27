@@ -1,9 +1,10 @@
 import boto3
 import botocore
+import os
 
 def lambda_handler(event, context):
-    vmx1 = "instanceidhere"
-    vmx2 = "instanceidhere"
+    vmx1 = os.environ['vmx1']
+    vmx2 = os.environ['vmx2']
     region = "us-west-2"
     ec2 = boto3.resource('ec2',region_name=region)
     client = boto3.client('ec2',region_name=region)
