@@ -1,5 +1,0 @@
-{
-  "source": ["aws.cloudwatch"],
-  "detail-type": ["CloudWatch Alarm State Change"],
-  "resources": ["arn:aws:instance1GreaterThanOrEqualToThreshold-StatusCheckFailed", "arn:aws:instance2GreaterThanOrEqualToThreshold-StatusCheckFailed"]
-}
