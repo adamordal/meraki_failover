@@ -5,13 +5,13 @@ import os
 def lambda_handler(event, context):
     vmx1 = os.environ['vmx1']
     vmx2 = os.environ['vmx2']
-    route_table = os.environ['routetable']
+    routetable = os.environ['routetable']
     region = os.environ['region']
     ec2 = boto3.resource('ec2',region_name=region)
     client = boto3.client('ec2',region_name=region)
-    route_table = ec2.RouteTable(route_table)
+    route_table = ec2.RouteTable(routetable)
     
-    if event["detail"]["configuration"]["metrics"][0]["metricStat"]["metric"]["dimensions"]["InstanceId"] == vmx1:
+    if event['detail']['configuration']['metrics'][0]['metricStat']['metric']['dimensions']['InstanceId'] == vmx1:
         #Check status of vmx2 to ensure its ok to use if not set to self (used in case both instances are offline and this is the one being brought online)
         try:
             response = client.describe_instance_status(InstanceIds=[vmx2])
@@ -28,9 +28,8 @@ def lambda_handler(event, context):
         try:
             response = client.delete_route(
                 DestinationCidrBlock='10.0.0.0/8',
-                RouteTableId=route_table
+                RouteTableId=routetable
             )
-            return(response)
         
         except botocore.exceptions.ClientError as error:
             print(error)
@@ -40,12 +39,11 @@ def lambda_handler(event, context):
                 DestinationCidrBlock='10.0.0.0/8',
                 InstanceId=instance
             )
-            print(f"Updated route to use {instance}")
-            return(route)
+            print(f'Updated route to use {instance}')
         except botocore.exceptions.ClientError as error:
             print(error)
         
-    elif event["detail"]["configuration"]["metrics"][0]["metricStat"]["metric"]["dimensions"]["InstanceId"] == vmx2:
+    elif event['detail']['configuration']['metrics'][0]['metricStat']['metric']['dimensions']['InstanceId'] == vmx2:
         #Check status of vmx2 to ensure its ok to use if not set to self (used in case both instances are offline and this is the one being brought online)
         try:
             response = client.describe_instance_status(InstanceIds=[vmx1])
@@ -61,9 +59,8 @@ def lambda_handler(event, context):
         try:
             response = client.delete_route(
                 DestinationCidrBlock='10.0.0.0/8',
-                RouteTableId=route_table
+                RouteTableId=routetable
             )
-            return(response)
         except botocore.exceptions.ClientError as error:
             print(error)
 
@@ -73,7 +70,6 @@ def lambda_handler(event, context):
                 DestinationCidrBlock='10.0.0.0/8',
                 InstanceId=instance
             )
-            print(f"Updated route to use {instance}")
-            return(route)
+            print(f'Updated route to use {instance}')
         except botocore.exceptions.ClientError as error:
             print(error)
