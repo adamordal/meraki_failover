@@ -5,10 +5,11 @@ import os
 def lambda_handler(event, context):
     vmx1 = os.environ['vmx1']
     vmx2 = os.environ['vmx2']
-    region = "us-west-2"
+    route_table = os.environ['routetable']
+    region = os.environ['region']
     ec2 = boto3.resource('ec2',region_name=region)
     client = boto3.client('ec2',region_name=region)
-    route_table = ec2.RouteTable('rtb-06153e46a122c1bf5')
+    route_table = ec2.RouteTable(route_table)
     
     if event["detail"]["configuration"]["metrics"][0]["metricStat"]["metric"]["dimensions"]["InstanceId"] == vmx1:
         #Check status of vmx2 to ensure its ok to use if not set to self (used in case both instances are offline and this is the one being brought online)
@@ -27,7 +28,7 @@ def lambda_handler(event, context):
         try:
             response = client.delete_route(
                 DestinationCidrBlock='10.0.0.0/8',
-                RouteTableId='rtb-06153e46a122c1bf5'
+                RouteTableId=route_table
             )
             return(response)
         
@@ -60,7 +61,7 @@ def lambda_handler(event, context):
         try:
             response = client.delete_route(
                 DestinationCidrBlock='10.0.0.0/8',
-                RouteTableId='rtb-06153e46a122c1bf5'
+                RouteTableId=route_table
             )
             return(response)
         except botocore.exceptions.ClientError as error:
