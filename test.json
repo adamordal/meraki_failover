@@ -1,0 +1,15 @@
+{
+    "detail":{
+       "configuration": {
+          "metrics":[{
+             "metricStat":{
+                "metric":{
+                   "dimensions":{
+                      "InstanceId":"i-0feb41105cd546f8e"
+                   }
+                }
+             }
+          }]
+       }
+    }
+ }
